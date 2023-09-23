@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                
+                <div class="h2 text-center my-4">Log In</div>
+                
+                <div class="my-2">
+                    {% if next %}
+                        {% if user.is_authenticated %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                          To proceed, please login with an account that has access.
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                          Please login to proceed
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% provider_login_url "facebook" method="oauth2" %}" class="btn btn-light">Login with Facebook</a>
+                    <a href="{% provider_login_url "google" method="oauth2" %}" class="btn btn-light">Login with Google</a>
+                </div>
+                <h5 class="text-center mt-3">or</h5>
+                <form action="." method="post" class="form-group">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        {% include "users/partials/_field.html" %}
+                    {% endfor %}
+                    
+                    <div class="d-grid mb-3">
+                      <input type="submit" class="btn btn-dark" value="Login"  >
+                      <input type="hidden" name="next" value="{{ next }}">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url "users:password_reset" %}">Forgot Password?</a>
+                        <a href="{% url "users:signup" %}">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

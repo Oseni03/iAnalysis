@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                
+                <div class="h2 text-center my-4">Resend account confirmation</div>
+                
+                <form action="." method="post" class="form-group">
+                    {% csrf_token %}
+                    
+                    <p>Write down your email and we will send you link to confirm your account</p>
+                    
+                    {% for field in form %}
+                        {% include "users/partials/_field.html" %}
+                    {% endfor %}
+                    
+                    <div class="d-grid mb-4">
+                      <input type="submit" class="btn btn-dark" value="Send the link"  >
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

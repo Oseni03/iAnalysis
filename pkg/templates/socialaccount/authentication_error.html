@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block content %}
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col text-center">
+                
+                <h1 class="my-3">{% trans "Social Network Login Failure" %}</h1>
+
+                <p>{% trans "An error occurred while attempting to login via your social network account." %}</p>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

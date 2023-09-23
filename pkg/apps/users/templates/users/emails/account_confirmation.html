@@ -1,0 +1,33 @@
+{% autoescape off %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Account confirmation</title>
+    <link href="{% static "css/main.min.css" %}" rel="stylesheet">
+</head>
+<body>
+    <div class="m-auto">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    
+                    <div class="h1 text-center mb-5">{{ site_name }}</div>
+                    
+                    <div class="h2 fw-bold mb-4">Finish the registration</div>
+                    <p class="mb-4">Click the button below to confirm your registration</p>
+                    <a href="http://{{ domain }}{% url 'users:activation' user=user_id token=token %}" class="btn btn-dark btn-lg">Confirm registration</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</body>
+</html>
+
+{% endautoescape %}

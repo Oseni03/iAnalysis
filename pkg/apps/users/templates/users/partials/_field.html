@@ -1,0 +1,11 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<div class="mb-3">
+  <label class="form-label">{{ field.label_tag }}</label>
+  {% if field.help_text %}
+      {% render_field field class+="form-control focus-ring focus-ring-dark" placeholder=field.help_text|safe %}
+  {% else %}
+      {% render_field field class+="form-control focus-ring focus-ring-dark" %}
+  {% endif %}
+</div>

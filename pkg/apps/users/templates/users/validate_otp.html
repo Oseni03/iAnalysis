@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                
+                <div class="h2 text-center my-4">2FA Authentication</div>
+                
+                <form action="{% url 'users:validate_OTP' %}" method="post" class="form-group">
+                    {% csrf_token %}
+                    
+                    <p>Enter the OTP from the authentication app to login</p>
+                    
+                    {% for field in form %}
+                        {% include "users/partials/_field.html" %}
+                    {% endfor %}
+                    
+                    <div class="mb-4 text-center">
+                      <input type="submit" class="btn btn-dark btn-lg" value="Validate login"  >
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

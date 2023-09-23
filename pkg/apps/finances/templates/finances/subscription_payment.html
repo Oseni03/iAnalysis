@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static "finances/subscription.js" %}"></script>
+<script>
+    makeSubscription("{{ STRIPE_PUBLISHABLE_KEY }}", "{{ user.email }}", "{{ clientSecret }}", "{{ price.id }}", "{{ redirect_url }}")
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Display stripe error messages here -->
+    <div id="messages" class="alert alert-info alert-dismissible fade show mt-3 d-flex align-items-center" role="alert">
+      <div id="stripe-error_msg"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                
+                <div class="h2 text-center my-4">Subscribe</div>
+                
+                <form method="post" class="form-group" id="card-form">
+                    {% csrf_token %}
+                    
+                    <div id="card-element">
+                        <!-- Elements will create form elements here -->
+                    </div>
+                    
+                    <div class="d-grid mb-4">
+                      <input id="submit_btn" type="submit" class="btn btn-dark" value="Make payment"  >
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

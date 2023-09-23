@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block content %}
+
+<div class="m-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col text-center">
+                <h1 class="my-3">{% trans "Login Cancelled" %}</h1>
+
+                {% url 'users:login' as login_url %}
+                
+                <p>{% blocktrans %}You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to.{% endblocktrans %}</p>
+                
+                <div class="my-3 d-grid">
+                    <a href="{{login_url}}" class="btn btn-dark">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

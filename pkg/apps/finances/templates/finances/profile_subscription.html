@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <div class="my-4">
+        <div id="header">
+            <h1 class="h2">My Subscription</h1>
+            <p class="text-muted">Subscription management page</p>
+        </div>
+        <hr class="my-4">
+        <div id="subscription">
+            <ul class="nav nav-pills my-3" id="pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-current_sub-tab" data-bs-toggle="pill" data-bs-target="#pills-current_sub" type="button" role="tab" aria-controls="pills-current_sub" aria-selected="true">Current subscription</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-payment_method-tab" data-bs-toggle="pill" data-bs-target="#pills-payment_method" type="button" role="tab" aria-controls="pills-payment_method" aria-selected="false">Payment methods</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-transaction_history-tab btn-secondary" data-bs-toggle="pill" data-bs-target="#pills-transaction_history" type="button" role="tab" aria-controls="pills-transaction_history" aria-selected="false">Transaction history</button>
+              </li>
+            </ul>
+            <div class="tab-content pt-3" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-current_sub" role="tabpanel" aria-labelledby="pills-current_sub-tab" tabindex="0">
+                  <div id="subscription-header">
+                      <h1 class="h2">
+                          Current subscription
+                      </h1>
+                      <p class="text-muted">Manage your subscription</p>
+                  </div>
+                  <hr class="my-4">
+                  <div>
+                    {% with sub=user.customer.subscription %}
+                    {% with price=sub.items.first.price %}
+                    <div class="shadow rounded mb-3">
+                      <div class="card-body p-4">
+                        <h2 class="card-title mb-3 fw-bold">Current plan: {{ price.product.name }}</h2>
+                        <div class="mb-3">
+                            <h5>Next renewal</h5>
+                            <p class="text-muted">
+                                {{ sub.billing_cycle_anchor.date }}
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>Next billing plan</h5>
+                            <p class="text-muted">
+                                {{ price.product.name }}
+                            </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                        <a href="{% url "finances:pricing" %}" class="btn btn-dark me-2"><i class="bi bi-pen"></i> Upgrade</a>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                          Cancel subscription
+                        </button>
+                    </div>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Cancel subscription</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a class="btn btn-dark" href="{% url 'finances:cancel_subscription' %}">Confirm</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {% endwith %}
+                    {% endwith %}
+                  </div>
+              </div>
+              <div class="tab-pane fade" id="pills-payment_method" role="tabpanel" aria-labelledby="pills-payment_method-tab" tabindex="0">
+                  <div id="payment_method-header">
+                      <h1 class="h2">
+                          Payment method
+                      </h1>
+                      <p class="text-muted">Manage your payment methods</p>
+                  </div>
+                  <hr class="my-4">
+                  <div>
+                    {% for method in user.customer.payment_methods %}
+                    {% with card=method.card %}
+                    <div class="card mb-3">
+                        <div class="card-body p-3 d-flex align-items-center">
+                            {{ card.brand }} ****{{ card.last4 }}
+                            <span class="badge bg-secondary">default</span>
+                            <span class="ms-auto">Expires {{ card.exp_month }}/{{ card.exp_year }} <i class="bi bi-x"></i></span>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                    <div class="d-flex">
+                        <a href="#" class="btn btn-dark me-2">
+                            <i class="bi bi-plus-lg"></i> Add payment method
+                        </a>
+                    </div>
+                  </div>
+              </div>
+              <div class="tab-pane fade" id="pills-transaction_history" role="tabpanel" aria-labelledby="pills-transaction_history-tab" tabindex="0">
+                  <div class="d-flex justify-content-between">
+                      <div>Aug 24, 2024</div>
+                      <div>$10.00</div>
+                      <div><span class="badge bg-success p-2">paid</span></div>
+                      <div>Starter plan</div>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

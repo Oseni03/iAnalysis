@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div class="container my-5">
+    
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Notifications</h3>
+        <ul class="nav nav-pills mb-3 d-flex justify-content-end" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-unread-tab" data-bs-toggle="pill" data-bs-target="#pills-unread" type="button" role="tab" aria-controls="pills-unread" aria-selected="false">Unread</button>
+          </li>
+        </ul>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
+        <div class="list-group">
+            <a href="{% url "notifications:read_all" %}">Mark all read</a>
+            {% for obj in notifications %}
+            {% if obj.is_read %}
+            <a href="{{ obj.url }}" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ obj.title }}</h5>
+                  <small>{{ obj.created_at.date }}</small>
+                </div>
+                <p class="mb-1">{{ obj.message }}.</p>
+            </a>
+            {% else %}
+            <a href="{{ obj.url }}" class="list-group-item list-group-item-action active" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ obj.title }}</h5>
+                  <small>{{ obj.created_at.date }}</small>
+                </div>
+                <p class="mb-1">{{ obj.message }}.</p>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+      </div>
+      <div class="tab-pane fade" id="pills-unread" role="tabpanel" aria-labelledby="pills-unread-tab" tabindex="0">
+        <div class="list-group">
+            <a href="{% url "notifications:read_all" %}">Mark all read</a>
+            {% for obj in notifications %}
+            <a href="{{ obj.url }}" class="list-group-item list-group-item-action active" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ obj.title }}</h5>
+                  <small>{{ obj.created_at.date }}</small>
+                </div>
+                <p class="mb-1">{{ obj.message }}.</p>
+            </a>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    {% if notifications %}
+        {% with notifications as page_obj %}
+            {% include "partials/_pagination.html" %}
+        {% endwith %}
+    {% endif %}
+</div>
+{% endblock %}

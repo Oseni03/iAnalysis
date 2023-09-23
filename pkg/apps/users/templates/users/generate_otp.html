@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="m-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                
+                <div class="h2 text-center my-4">Enable two-factor Authentication</div>
+                
+                <div class="mb-3 text-center d-flex flex-column justify-content-center">
+                    <div class="mb-3">
+                        <div>
+                            <img src="{% static img_name %}" class="object-fit-fill border rounded" alt="qrcode-image">
+                        </div>
+                        <p class="text-muted">Scan the QRcode with an authentication app</p>
+                    </div>
+                    <div class="mb-3">or</div>
+                    <div class="mb-3">
+                        <code>
+                            {{ otp_auth_url }}
+                        </code>
+                        <p class="text-muted">Enter the url in an authentication app</p>
+                    </div>
+                </div>
+                
+                
+                <form action="." method="post" class="form-group">
+                    {% csrf_token %}
+                    
+                    <p class="text-center">Enter the OTP provided by the authentication app</p>
+                    
+                    {% for field in form %}
+                        {% include "users/partials/_field.html" %}
+                    {% endfor %}
+                    
+                    <div class="d-grid mb-4">
+                      <input type="submit" class="btn btn-dark" value="Submit OTP"  >
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
