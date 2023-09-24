@@ -3,8 +3,8 @@ from django.core import exceptions
 from django.utils.translation import gettext as _
 
 from .models import Database 
-from .utils import get_schema, generate_identifier
-from .services import secrets
+# from .utils import get_schema, generate_identifier
+# from .services import secrets
 
 
 class CredentialsForm(forms.Form):

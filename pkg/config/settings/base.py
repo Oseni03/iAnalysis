@@ -78,9 +78,9 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': env("GOOGLE_AUTH_CLIENT_ID", default=""),
-            'secret': env("GOOGLE_AUTH_SECRET_KEY", default=""),
-            'key': env("GOOGLE_AUTH_KEY", default=""),
+            'client_id': env("GOOGLE_AUTH_CLIENT_ID"),
+            'secret': env("GOOGLE_AUTH_SECRET_KEY"),
+            'key': env("GOOGLE_AUTH_KEY"),
         },
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {
@@ -90,9 +90,9 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'facebook': {
         'APP': {
-            'client_id': env("FACEBOOK_AUTH_CLIENT_ID", default=""),
-            'secret': env("FACEBOOK_AUTH_SECRET_KEY", default=""),
-            'key': env("FACEBOOK_AUTH_KEY", default="")
+            'client_id': env("FACEBOOK_AUTH_CLIENT_ID"),
+            'secret': env("FACEBOOK_AUTH_SECRET_KEY"),
+            'key': env("FACEBOOK_AUTH_KEY")
         },
         'METHOD': 'oauth2',
         'SCOPE': ['email', 'public_profile'],
@@ -191,7 +191,7 @@ DEFAULT_FROM_EMAIL = env("AWS_SES_FROM_EMAIL")
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX", default="[SaaS]")
+EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX")
 
 
 #-----------------------------------
@@ -201,15 +201,15 @@ AWS_SES_ACCESS_KEY_ID = env("AWS_SES_ACCESS_KEY_ID")
 AWS_SES_SECRET_ACCESS_KEY = env("AWS_SES_SECRET_ACCESS_KEY")
 AWS_SES_REGION_NAME = env("AWS_SES_REGION_NAME")
 AWS_SES_REGION_ENDPOINT = f"email.{AWS_SES_REGION_NAME}.amazonaws.com"
-AWS_SES_FROM_EMAIL = env("AWS_SES_FROM_EMAIL", default="")
+AWS_SES_FROM_EMAIL = env("AWS_SES_FROM_EMAIL")
 USE_SES_V2 = True
 
 
 #-----------------------------------
 # MY SITE SETTINGS
 #-----------------------------------
-DOMAIN = env("DOMAIN", default="localhost")
-SITE_NAME = env("SITE_NAME", default="Saas Boilerplate")
+DOMAIN = env("DOMAIN")
+SITE_NAME = env("SITE_NAME")
 
 
 #-----------------------------------
@@ -358,7 +358,7 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env.int("SUBSCRIPTION_TRIAL_PERIOD_DAYS", defau
 # AWS WORKER 
 #-----------------------------------
 TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
-WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
+WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME")
 AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
 
@@ -369,3 +369,9 @@ TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
 
+
+#-----------------------------------
+# AI AND OPENAI
+#-----------------------------------
+OPENAI_API_KEY = env("OPENAI_API_KEY")
+ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY")
