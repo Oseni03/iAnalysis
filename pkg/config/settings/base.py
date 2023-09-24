@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.finances",
     "apps.notifications",
     "apps.websockets",
+    "apps.dashboard",
     
     # External Apps 
     "channels",
