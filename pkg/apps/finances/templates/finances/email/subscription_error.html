@@ -1,0 +1,15 @@
+{% extends "base_email.html" %}
+{% load static %}
+
+{% block title %}
+Subscription error
+{% endblock %}
+
+{% block content %}
+<div class="h1 text-center mb-5">{{ site_name }}</div>
+
+<div class="h2 fw-bold mb-4">Subscription Error</div>
+<p class="mb-3">This is to inform you that your attempt to subscribe failed</p>
+<p class="mb-4">Click the button below to retry subscribing again to continue enjoying our service</p>
+<a href="http://{{ domain }}{% url 'finances:pricing' %}" class="btn btn-dark btn-lg">Subscribe</a>
+{% endblock %}

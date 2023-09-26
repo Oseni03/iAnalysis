@@ -81,8 +81,6 @@ else:
     
     
     # REDIS setup
-    REDIS_URL = f'{env("REDIS_URL", default="redis://127.0.0.1:6379")}/{0}'
-    
     
     CHANNEL_LAYERS = {
         "default": {

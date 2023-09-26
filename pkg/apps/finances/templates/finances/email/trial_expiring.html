@@ -1,34 +1,15 @@
-{% autoescape off %}
-<!DOCTYPE html>
+{% extends "base_email.html" %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Trial expiring soon</title>
-    <link href="{% static "css/main.min.css" %}" rel="stylesheet">
-</head>
-<body>
-    <div class="m-auto">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    
-                    <div class="h1 text-center mb-5">{{ site_name }}</div>
-                    
-                    <div class="h2 fw-bold mb-4">Trial Expiring Soon</div>
-                    <p class="mb-3">Your trial period will be ending/expiring on {{ expiry_date.date }}</p>
-                    <p class="mb-4">Click the button below to continue enjoying our service with a paid plan</p>
-                    <a href="http://{{ domain }}{% url 'finances:pricing' %}" class="btn btn-dark btn-lg">Upgrade</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    
-    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-</body>
-</html>
 
-{% endautoescape %}
+{% block title %}
+Trial expiring soon
+{% endblock %}
+
+{% block content %}
+<div class="h1 text-center mb-5">{{ site_name }}</div>
+
+<div class="h2 fw-bold mb-4">Trial Expiring Soon</div>
+<p class="mb-3">Your trial period will be ending/expiring on {{ expiry_date.date }}</p>
+<p class="mb-4">Click the button below to continue enjoying our service with a paid plan</p>
+<a href="http://{{ domain }}{% url 'finances:pricing' %}" class="btn btn-dark btn-lg">Upgrade</a>
+{% endblock %}

@@ -18,7 +18,7 @@ from allauth.core import ratelimit
 
 import qrcode
 
-from . import notifications, forms, models, tokens, jwt, decorators, utils
+from . import forms, models, tokens, jwt, decorators, utils
 from .services import otp as otp_services
 
 

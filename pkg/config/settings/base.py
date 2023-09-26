@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     "django_htmx",
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 
@@ -187,22 +189,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #-----------------------------------
 # EMAIL SETTINGS
 #-----------------------------------
-DEFAULT_FROM_EMAIL = env("AWS_SES_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX")
 
-
-#-----------------------------------
-# AWS SES SETTINGS(EMAIL)
-#-----------------------------------
-AWS_SES_ACCESS_KEY_ID = env("AWS_SES_ACCESS_KEY_ID")
-AWS_SES_SECRET_ACCESS_KEY = env("AWS_SES_SECRET_ACCESS_KEY")
-AWS_SES_REGION_NAME = env("AWS_SES_REGION_NAME")
-AWS_SES_REGION_ENDPOINT = f"email.{AWS_SES_REGION_NAME}.amazonaws.com"
-AWS_SES_FROM_EMAIL = env("AWS_SES_FROM_EMAIL")
-USE_SES_V2 = True
 
 
 #-----------------------------------
@@ -355,15 +347,6 @@ SUBSCRIPTION_TRIAL_PERIOD_DAYS = env.int("SUBSCRIPTION_TRIAL_PERIOD_DAYS", defau
 
 
 #-----------------------------------
-# AWS WORKER 
-#-----------------------------------
-TASKS_BASE_HANDLER = env("TASKS_BASE_HANDLER", default="common.tasks.Task")
-WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME")
-AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
-TASKS_LOCAL_URL = env("TASKS_LOCAL_URL", default=None)
-
-
-#-----------------------------------
 # USER FILE 
 #-----------------------------------
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
@@ -375,3 +358,20 @@ USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
 #-----------------------------------
 OPENAI_API_KEY = env("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY")
+
+
+#-----------------------------------
+# REDIS DEFINITION 
+#-----------------------------------
+REDIS_URL = f'{env("REDIS_URL", default="redis://127.0.0.1:6379")}/{0}'
+
+#-----------------------------------
+# CELERY DEFINITION 
+#-----------------------------------
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+# this allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'

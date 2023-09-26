@@ -8,16 +8,16 @@ from django.contrib.auth.models import update_last_login
 from django.utils.translation import gettext as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
 
 
 from common.decorators import context_user_required
 
+import enums
 from .services import otp as otp_services
 from .utils import generate_otp_auth_token
 from .models import User, UserProfile, UserAvatar
-from . import notifications, models, tokens
+from config.celery import send_mail
+from . import models, tokens
 
 UPLOADED_AVATAR_SIZE_LIMIT = 1 * 1024 * 1024
 
@@ -114,24 +114,7 @@ class UserSignupForm(forms.ModelForm):
         if commit:
             user.save()
         
-        data={
-            "domain": settings.DOMAIN,
-            "site_name": settings.SITE_NAME,
-            'user_id': user.id.hashid, 
-            'token': tokens.account_activation_token.make_token(user)
-        }
-        if settings.DEVELOPMENT_MODE:
-            subject = "Activate your Account"
-            message = render_to_string(
-                "users/emails/account_confirmation.html",
-                data
-            )
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-        else:
-            notifications.AccountActivationEmail(
-                user=user, 
-                data=data
-            ).send()
+        send_mail.delay(enums.ACCOUNT_CONFIRMATION, user)
         return user
 
 
@@ -154,49 +137,6 @@ class UserAccountConfirmationForm(forms.Form):
         user.is_active = True
         if commit:
             user.save()
-        return user
-
-
-class UserAccountResendConfirmationForm(forms.Form):
-    email = forms.EmailField(
-        validators=[validators.EmailValidator()],
-        help_text=_("Write your email here...")
-    )
-    
-    def clean(self):
-        cleaned_data = super().clean()
-        user = None
-        email = cleaned_data["email"]
-        try:
-            user = dj_auth.get_user_model().objects.get(email=email)
-        except dj_auth.get_user_model().DoesNotExist:
-            pass
-        return {**cleaned_data, 'user': user}
-        
-    def save(self, commit=True):
-        user = self.cleaned_data.pop('user')
-        
-        if user:
-        #     if jwt_api_settings.UPDATE_LAST_LOGIN:
-        #         update_last_login(None, user)
-            data={
-                "domain": settings.DOMAIN,
-                "site_name": settings.SITE_NAME,
-                'user_id': user.id.hashid, 
-                'token': tokens.account_activation_token.make_token(user)
-            }
-            if settings.DEVELOPMENT_MODE:
-                subject = "Activate your Account"
-                message = render_to_string(
-                    "users/emails/account_confirmation.html",
-                    data
-                )
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-            else:
-                notifications.AccountActivationEmail(
-                    user=user, 
-                    data=data
-                ).send()
         return user
 
 
@@ -223,24 +163,7 @@ class PasswordResetForm(forms.Form):
     def save(self, commit=True):
         user = self.cleaned_data.pop('user')
         if user:
-            data={
-                "domain": settings.DOMAIN,
-                "site_name": settings.SITE_NAME,
-                'user_id': user.id.hashid, 
-                'token': tokens.password_reset_token.make_token(user)
-            }
-            if settings.DEVELOPMENT_MODE:
-                subject = "Activate your Account"
-                message = render_to_string(
-                    "users/emails/password_reset.html",
-                    data
-                )
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-            else:
-                notifications.PasswordResetEmail(
-                    user=user, 
-                    data=data
-                ).send()
+            send_mail.delay(enums.PASSWORD_RESET, user)
         return user
 
 
