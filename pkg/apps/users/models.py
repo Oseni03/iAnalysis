@@ -40,6 +40,7 @@ class UserManager(BaseUserManager):
             password=password,
         )
         group_admin, _ = Group.objects.get_or_create(name=CommonGroups.Admin)
+        user.is_active = True
         user.is_superuser = True
         user.groups.add(group_admin)
         user.save(using=self._db)

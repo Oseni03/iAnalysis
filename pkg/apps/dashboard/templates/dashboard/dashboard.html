@@ -1,0 +1,117 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load static %}
+{% load django_htmx %}
+
+
+{% block extra_css %}
+<link href="{% static 'dashboard/dashboard.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'dashboard/sidebars.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% include "dashboard/partials/_svg.html" %}
+
+<nav class="navbar navbar-expand-md sticky-top bg-light flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+
+  <ul class="navbar-nav d-md-none">
+    <li class="nav-item text-nowrap d-flex align-self-center">
+      <button class="nav-link p-3 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-expanded="true" aria-controls="sidebarMenu" aria-label="Toggle navigation">
+        <svg class="bi"><use xlink:href="#list"/></svg>
+      </button>
+    </li>
+  </ul>
+
+</nav>
+
+<div class="container-fluid" id="dashboard-container">
+  <div class="row g-0">
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+      <div class="offcanvas-lg offcanvas-start bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sidebarMenuLabel">iAnalyze</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-md-3 overflow-y-auto">
+          <ul class="list-unstyled">
+              <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                  Home
+                </button>
+                <div class="collapse show" id="home-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Updates</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Reports</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-auto">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                  Dashboard
+                </button>
+                <div class="collapse" id="dashboard-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Weekly</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Monthly</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Annually</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-auto">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+                  Orders
+                </button>
+                <div class="collapse" id="orders-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">New</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Processed</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Shipped</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Returned</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li class="border-top my-3"></li>
+              <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                  Account
+                </button>
+                <div class="collapse" id="account-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">New...</a></li>
+                    <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Profile</a></li>
+                    <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Settings</a></li>
+                    <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Sign out</a></li>
+                  </ul>
+                </div>
+              </li>
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+
+    <main class="d-flex flex-nowrap col-md-9 ms-sm-auto col-lg-10">
+        <div class="card border-0 d-flex flex-column h-100">
+          <div class="card-header bg-transparent">Header</div>
+          <div class="card-body overflow-y-auto flex-grow-1">
+            <h5 class="card-title">Success card title</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+          <div class="card-footer p-0">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Natural language query" aria-label="Natural language query" aria-describedby="button-addon2">
+              <button class="btn btn-dark" type="button" id="button-addon2"><i class="bi bi-send"></i></button>
+            </div>
+          </div>
+        </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'dashboard/sidebars.js' %}"></script>
+{% endblock %}

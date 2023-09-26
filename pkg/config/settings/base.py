@@ -346,7 +346,7 @@ if not STRIPE_CHECKS_ENABLED:
 #-----------------------------------
 # SUBSCRIPTION
 #-----------------------------------
-SUBSCRIPTION_ENABLE = env.bool("SUBSCRIPTION_ENABLE", default=True)
+SUBSCRIPTION_ENABLE = env.bool("SUBSCRIPTION_ENABLE", default=False)
 SUBSCRIPTION_HAS_FREE_PLAN = env.bool("SUBSCRIPTION_HAS_FREE_PLAN", default=False)
 SUBSCRIPTION_HAS_TRIAL_PLAN = env.bool("SUBSCRIPTION_HAS_TRIAL_PLAN", default=True)
 SUBSCRIPTION_TRIAL_PRICE_ID = env("SUBSCRIPTION_TRIAL_PRICE_ID", default="")

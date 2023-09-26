@@ -9,10 +9,8 @@
     {% block extra_css %}
     {% endblock %}
     
-    {% block extra_js %}
-    {% endblock %}
 </head>
-<body class="d-flex flex-column h-100" style="padding-top: 56px;">
+<body style="padding-top: 56px;">
     {% include "partials/_header.html" %}
     
     <div class="container">
@@ -22,13 +20,10 @@
     {% block content %}
     {% endblock %}
     
-    <div class="container mt-auto">
-        {% include "partials/_footer.html" %}
-    </div>
-    
-    
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% csrf_token %}
     <script src="{% static 'js/htmx.min.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
 </body>
 </html>

@@ -15,8 +15,8 @@ class DashboardView(LoginRequiredMixin, ListView):
     template_name = "dashboard/dashboard.html"
     context_object_name = "databases"
     
-    def get_queryset(self, request):
-        return super().get_queryset(request).filter(user=request.user)
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

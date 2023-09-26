@@ -6,5 +6,5 @@ app_name = "dashboard"
 
 urlpatterns = [
     path("", views.DashboardView.as_view(), name="dashboard"),
-    path("<pk>/", views.chat, name="data-chat"),
+    path("<int:pk>/", views.chat, name="data-chat"),
 ]

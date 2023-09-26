@@ -74,7 +74,7 @@ class PricingPayment(LoginRequiredMixin, View):
             return JsonResponse({"error": {'message': e.user_message}}, status=400)
 
 
-@method_decorator(subscribe_required, name="dispatch")
+# @method_decorator(subscribe_required, name="dispatch")
 class SubscriptionPage(LoginRequiredMixin, TemplateView):
     template_name = "finances/profile_subscription.html"
 
