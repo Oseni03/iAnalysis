@@ -21,34 +21,26 @@
               <a class="nav-link" aria-current="page" href="#">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{% url "finances:pricing" %}">Pricing</a>
+              <a class="nav-link" aria-current="page" href="{% url 'finances:pricing' %}">Pricing</a>
             </li>
             {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">Dashboard</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-fill"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'users:login' %}">Login</a></li>
+                    <li><a class="dropdown-item" href="{% url 'users:profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" aria-current="page" href="#">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="{% url 'notifications:all' %}">Notifications</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'users:logout' %}">Sign Out</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-              <a class="btn btn-light position-relative" aria-current="page" href="{% url "notifications:all" %}" id="notifications">
-                  Notification
-                  {% if user.has_unread_notifications %}
-                  <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                    <span class="visually-hidden">New alerts</span>
-                  </span>
-                  {% endif %}
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url "users:profile" %}">Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url "users:logout" %}">Sign Out</a>
-            </li>
+            
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url "users:login" %}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link btn btn-lg btn-light" href="{% url "users:signup" %}">Sign Up</a>
+              <a class="btn btn-lg btn-light mx-md-2" href="{% url "users:signup" %}">Sign Up</a>
             </li>
             {% endif %}
         </ul>

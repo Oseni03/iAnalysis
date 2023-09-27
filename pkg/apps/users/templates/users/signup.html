@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load widget_tweaks %}
+{% load socialaccount %}
 
 {% block content %}
 <div class="m-auto">
@@ -11,8 +12,8 @@
                 <div class="h2 text-center my-4">Sign Up</div>
                 
                 <div class="d-grid gap-2">
-                    <a href="#" class="btn btn-light">Sign up with Facebook</a>
-                    <a href="#" class="btn btn-light">Sign up with Google</a>
+                    <a href="{% provider_login_url "facebook" method="oauth2" %}" class="btn btn-light"><span class="px-2"><i class="bi bi-facebook"></i></span>Sign up with Facebook</a>
+                    <a href="{% provider_login_url "google" method="oauth2" %}" class="btn btn-light"><span class="px-2"><i class="bi bi-google"></i> </span>Sign up with Google</a>
                 </div>
                 <h5 class="text-center mt-3">or</h5>
                 <form action="." method="POST" class="form-group">
