@@ -1,24 +1,21 @@
-.bi {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
+:root {
+    --bs-offcanvas-width: 250px;
+    --bs-navbar-height: 56px;
 }
 
 html {
     height: -webkit-fill-available;
 }
 
-@media (min-width: 768px) {
-}
-
-:root {
-    --bs-offcanvas-width: 250px;
-    --bs-navbar-height: 56px;
-}
-
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
+}
+
+.bi {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
 }
 
 .sidebar-nav {
@@ -50,6 +47,7 @@ body {
         position: -webkit-sticky;
         position: sticky;
         top: 48px;
+        bottom: 0;
     }
 
     .sidebar-nav {
