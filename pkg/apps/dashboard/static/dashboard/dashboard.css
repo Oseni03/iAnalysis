@@ -26,11 +26,11 @@ body {
     align-items: center;
 }
 
-.sidebar-link .right-icon {
+.sidebar-link .right-icon, .card-header a {
     transition: all ease 0.25s;
 }
 
-.sidebar-link[aria-expanded="true"] .right-icon {
+.sidebar-link[aria-expanded="true"] .right-icon, .card-header a[aria-expanded="true"] {
     transform: rotate(180deg);
 }
 
