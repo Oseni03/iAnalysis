@@ -6,14 +6,14 @@ import debug_toolbar
 
 from django.contrib.auth.decorators import login_required
 
-admin.site.login = login_required(admin.site.login)
+# admin.site.login = login_required(admin.site.login)
 
 urlpatterns = [
     path("", admin.site.urls),
     path("finances/", include("apps.finances.urls.admin")),
 ]
 
-if settings.DEVELOPMENT_MODE is True:
-    urlpatterns.append(
-        path("__debug__", include(debug_toolbar.urls))
-    )
+# if settings.DEVELOPMENT_MODE is True:
+#     urlpatterns.append(
+#         path("__debug__", include(debug_toolbar.urls))
+#     )
