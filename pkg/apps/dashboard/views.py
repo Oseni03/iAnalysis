@@ -3,11 +3,14 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
+from django.views.generic import View
+from django.utils.decorators import method_decorator
 
 from .models import Database, Message
+from .decorators import require_HTMX
 from .forms import ChatForm, DatabaseForm
-# from .utils import get_elasticsearch_agent, get_db_agent
-# from .services import secrets
+from . import tasks
+
 
 # Create your views here.
 class DashboardView(LoginRequiredMixin, ListView):
@@ -18,26 +21,10 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
     
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context["form"] = DatabaseForm()
-        return context
-    
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(*args, **kwargs)
-        form = DatabaseForm(request.POST)
-        if form.is_valid():
-            form.save(request.user)
-            messages.success(request, "Database added successfully!")
-        else:
-            for error in form.errors.values():
-                messages.info(request, error)
-            context["form"] = form
-        return render(request, self.template_name, context)
-
 
 @login_required
-def chat(reauest, pk):
+@require_HTMX
+def chat(request, pk):
     db = get_object_or_404(Database, id=pk, user=request.user)
     form = ChatForm()
     
@@ -47,37 +34,51 @@ def chat(reauest, pk):
             query = form.cleaned_data["message"]
             model = form.cleaned_data["model"]
             
-            identifier = generate_identifier(request.user, db)
+            tasks.return_query_resp.delay(user.id, db.id)
             
-            if identifier not in request.session:
-                username, password = secrets.get_secret_value(identifier)
-                conn_str = db.conn_str(username, password)
-                
-                if db.protocol == Database.ProtocolType.ELASTIC_SEARCH:
-                    agent = get_elasticsearch_agent(conn_str, model, db.tbls)
-                else:
-                    agent = get_db_agent(conn_str, model, db.tbls)
-                request.session[identifier] = agent
-            else:
-                agent = request.session.get(identifier)
+            msg = Message.objects.create(db=db, text=query) # save user query to the database
             
-            response = agent.run(query)
-            result = response["result"]
-            
-            Message.objects.create(db=db, msg=query) # save user query to the database
-            Message.objects.create(
-                db=db, 
-                msg=result, 
-                sql_query=response["intermediate_steps"][-2],
-                is_ai=True
-            ) # save ai response and sql to the database 
-            
-            return JsonResponse({"query": query, "result": result})
+            return render(request, "dashboard/partials/_msg.html", {"msg": msg})
         else:
-            return JsonResponse({"errors": form.errors.values()})
+            for error in forms.errors.values():
+                messages.error(request, error)
             
     context = {
         "form": form,
-        "messages": Message.objects.filter(db=db)
+        "messages": Message.objects.filter(db=db),
+        "db": db
     }
     return render(request, "dashboard/partial/_chat.html", context)
+
+
+@method_decorator(require_HTMX, name="dispatch")
+class AddDataView(View):
+    def get(self, request, data_type, *args, **kwargs):
+        context = {}
+        if data_type == "db":
+            context["form"] = DatabaseForm()
+            context["data_type"] = "Database"
+        else:
+            pass 
+        return render(request, "dashboard/partials/_data_form.html", context)
+    
+    def post(self, request, data_type, *args, **kwargs):
+        context = {}
+        if data_type == "db":
+            form = DatabaseForm(request.POST)
+        elif data_type == "api":
+            pass
+        
+        if form.is_valid():
+            db = form.save(request.user)
+            messages.success(request, "Database added successfully!")
+            return redirect("dashboard:data_chat", args=(db.id,))
+        else:
+            for error in form.errors.values():
+                messages.info(request, error)
+            context["form"] = form
+            if data_type == "db":
+                context["data_type"] = "Database"
+            elif data_type == "api":
+                context["data_type"] = "API"
+        return render(request, "dashboard/partials/_data_form.html", context)

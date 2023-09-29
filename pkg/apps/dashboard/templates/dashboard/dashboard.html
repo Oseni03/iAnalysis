@@ -42,9 +42,8 @@
                                     </button>
 
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        <li><a class="dropdown-item" hx-get="{% url 'dashboard:data_add' 'db' %}" hx-push-url="true" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-content">Database</a></li>
+                                        <li><a class="dropdown-item" href="#">API</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -178,11 +177,8 @@
             </div>
         </div>
 
-        <main class="d-flex flex-nowrap col-md-9 ms-sm-auto col-lg-10">
+        <main class="d-flex flex-nowrap col-md-9 ms-sm-auto col-lg-10" id="main-content">
             <div class="card border-0 d-flex flex-column h-100 w-100">
-                <div class="card-header bg-transparent text-center">
-                    <h4>Chat title</h4>
-                </div>
                 <div class="card-body overflow-y-auto flex-grow-1 text-wrap vstack gap-3">
 
                     <!-- Make 'collapseExample2' the id of the chat message -->

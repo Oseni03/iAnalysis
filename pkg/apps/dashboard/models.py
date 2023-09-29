@@ -18,14 +18,15 @@ class Database(models.Model):
         
     id = hashid_field.HashidAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="databases", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
     protocol = models.CharField(max_length=255, choices=ProtocolType.choices)
     host = models.CharField(max_length=255)
     port = models.CharField(max_length=255, null=True) 
     db_name = models.CharField(max_length=255, null=True) 
     tables = models.CharField(max_length=255, null=True)
-    snowflake_account = models.CharField(max_length=255, null=True)
-    snowflake_schema = models.CharField(max_length=255, null=True)
-    snowflake_warehouse = models.CharField(max_length=255, null=True)
+    snowflake_account = models.CharField(max_length=255, null=True, help_text=_("For snowflake database"))
+    snowflake_schema = models.CharField(max_length=255, null=True, help_text=_("For snowflake database"))
+    snowflake_warehouse = models.CharField(max_length=255, null=True, help_text=_("For snowflake database"))
     schema = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -42,8 +43,6 @@ class Database(models.Model):
     def conn_str(self, username, password):
         if self.protocol == self.ProtocolType.SNOWFLAKE:
             return f"snowflake://{username}:{password}@{self.snowflake_account}/{self.db_name}/{self.snowflake_schema}?warehouse={self.snowflake_warehouse}"
-        elif self.protocol == self.ProtocolType.REDSHIFT:
-            return f"redshift+redshift_connector://{username}:{password}@{self.host}:{self.port}/{self.db_name}"
         elif self.protocol == self.ProtocolType.ELASTIC_SEARCH:
             return f"{self.protocol}://{username}:{password}@{self.host}:{self.port}"
         return f"{self.protocol}://{username}:{password}@{self.host}:{self.port}/{self.db_name}"
@@ -54,7 +53,8 @@ class Database(models.Model):
 
 
 class Message(models.Model):
+    id = hashid_field.HashidAutoField(primary_key=True)
     db = models.ForeignKey(Database, related_name="messages", on_delete=models.CASCADE)
-    msg = models.CharField(max_length=255)
+    text = models.CharField(max_length=255)
     is_ai = models.BooleanField(default=False)
     sql_query = models.CharField(null=True, max_length=255)

@@ -13,11 +13,13 @@ class CredentialsForm(forms.Form):
 
 
 class DatabaseForm(forms.ModelForm, CredentialsForm):
-    # protocol = models.CharField(widget=forms.HiddenInput())
+    protocol = forms.ChoiceField(label=_("Choose database type"), choices= Database.ProtocolType.choices)
+    db_name = forms.CharField(label=_("Database name"))
+    tables = forms.CharField(label=_("Tables (optional)"), help_text=_("Coma (,) seperated names"))
     
     class Meta:
         model = Database 
-        fields = (
+        fields = ("title",
             "protocol", "host", "port", 
             "db_name", "tables", "snowflake_account", 
             "snowflake_schema", "snowflake_warehouse"
@@ -49,5 +51,12 @@ class DatabaseForm(forms.ModelForm, CredentialsForm):
 
 
 class ChatForm(forms.Form):
-    model = forms.ChoiceField(widget=forms.RadioSelect, choices=[("gpt-3", _("GPT3")), ("gpt-4", _("GPT4"))])
-    message = forms.CharField()
+    model = forms.ChoiceField(
+        widget=forms.RadioSelect(attrs={
+            "class": "btn-check",
+            "autocomplete": "off"
+        }), 
+        choices=[("gpt-3", _("GPT3")), ("gpt-4", _("GPT4"))],
+        initial="gpt-3"
+    )
+    message = forms.CharField(help_text=_("Natural language query"))

@@ -1,0 +1,61 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load django_htmx %}
+
+<div class="card border-0 d-flex flex-column h-100 w-100">
+    <form hx-post="{% url 'dashboard:data_chat' %}" hx-swap="beforeend" hx-target="#message-contents">
+        {% csrf_token %}
+        <div class="card-header bg-transparent d-flex justify-content-between">
+            <h4>{{ db.title }}</h4>
+            <div>
+                {{ form.model }}
+                
+                {% comment %}
+                <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+                <label class="btn btn-secondary" for="option2">GPT4</label>
+                {% endcomment %}
+            </div>
+        </div>
+        <div class="card-body overflow-y-auto flex-grow-1 text-wrap vstack gap-3" id="message-contents">
+
+            {% for msg in messages %}
+            {% include "dashboard/partials/_msg.html" %}
+            {% endfor %}
+        </div>
+        <div class="card-footer py-0">
+            <div class="input-group">
+                {% render_field form.message class+="form-control" placeholder=form.message.help_text|safe aria-label=form.message.help_text|safe aria-describedby="button-addon2" %}
+                <button class="btn btn-dark" type="submit" id="button-addon2"><i class="bi bi-send"></i></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    const websocketProtocol = window.location.protocol === "http:" ? "wss": "ws";
+    const wsEndpoint = `${websocketProtocol}://${window.location.host}/ws/chat/{{db.id}}`;
+    const socket = new WebSocket(wsEndpoint);
+
+    // New event listener to capture incoming messages
+    socket.addEventListener("message", (event) => {
+        const messageData = JSON.parse(event.data);
+        console.log("Received notification:", messageData.message); // Log the received message to the console
+        displayMsg(messageData.message);
+    });
+
+    function displayMsg(msgHTML) {
+        const msgContainer = document.getElementById("message-contents");
+
+        msgContainer.appendChild(msgHTML);
+    }
+
+    socket.onopen = (event) => {
+        console.log("WebSocket connection opened!");
+    };
+
+    socket.onclose = (event) => {
+        console.log("WebSocket connection closed!");
+    };
+
+</script>

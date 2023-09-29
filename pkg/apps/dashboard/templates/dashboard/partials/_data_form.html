@@ -1,0 +1,19 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<div class="container m-3">
+    
+    <div class="h2 text-center my-3">Add {{ data_type }}</div>
+    
+    <form action="." method="POST" class="form-group">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            {% include "users/partials/_field.html" %}
+        {% endfor %}
+        
+        <div class="d-grid mb-4">
+          <input type="submit" class="btn btn-dark" value="Add"  >
+        </div>
+    </form>
+</div>

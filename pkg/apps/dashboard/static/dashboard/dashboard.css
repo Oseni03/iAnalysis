@@ -39,10 +39,6 @@ body {
         overflow: auto !important;
     }
 
-    .offcanvas-backdrop::before {
-        display: none;
-    }
-
     .sidebar .offcanvas-md {
         position: -webkit-sticky;
         position: sticky;
