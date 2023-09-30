@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 import hashid_field
@@ -57,6 +58,9 @@ class Data(models.Model):
     
     def __str__(self):
         return str(self.db_name)
+    
+    def get_absolute_url(self):
+        return reverse("dashboard:data_chat", args=(self.id,))
     
     @property
     def tbls(self):

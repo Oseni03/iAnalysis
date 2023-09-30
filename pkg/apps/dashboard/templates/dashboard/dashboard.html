@@ -59,16 +59,20 @@
                                 <div class="collapse" id="DatabaseCollapse">
                                     <div>
                                         <ul class="navbar-nav ps-3">
+                                            {% for db in databases %}
+                                            <li>
+                                                <a hx-get="{{ db.get_absolute_url }}" class="nav-link px-3" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">
+                                                    <span>{{ db.title }}</span>
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                            {% comment %}
                                             <li>
                                                 <a href="#" class="nav-link px-3">
                                                     <span>Nested link</span>
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="#" class="nav-link px-3">
-                                                    <span>Nested link</span>
-                                                </a>
-                                            </li>
+                                            {% endcomment %}
                                         </ul>
                                     </div>
                                 </div>
@@ -82,16 +86,13 @@
                                 <div class="collapse" id="APICollapse">
                                     <div>
                                         <ul class="navbar-nav ps-3">
+                                            {% for api in apis %}
                                             <li>
-                                                <a href="#" class="nav-link px-3">
-                                                    <span>Nested link</span>
+                                                <a hx-get="{{ api.get_absolute_url }}" class="nav-link px-3" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">
+                                                    <span>{{ api.title }}</span>
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="#" class="nav-link px-3">
-                                                    <span>Nested link</span>
-                                                </a>
-                                            </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </div>

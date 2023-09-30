@@ -13,13 +13,14 @@ from . import tasks
 
 
 # Create your views here.
-class DashboardView(LoginRequiredMixin, ListView):
-    model = Data
+class DashboardView(LoginRequiredMixin, View):
     template_name = "dashboard/dashboard.html"
-    context_object_name = "databases"
     
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context["databases"] = Data.objects.database().filter(user=request.user)
+        context["apis"] = Data.objects.api().filter(user=request.user)
+        return render(request, self.template_name, context)
     
 
 @login_required
