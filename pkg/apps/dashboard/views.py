@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 
 from .models import Data, Message
 from .decorators import require_HTMX
-from .forms import ChatForm, DatabaseForm
+from .forms import ChatForm, DatabaseForm, APIForm
 from . import tasks
 
 
@@ -26,7 +26,7 @@ class DashboardView(LoginRequiredMixin, View):
 @login_required
 @require_HTMX
 def chat(request, pk):
-    db = get_object_or_404(Data, id=pk, user=request.user)
+    data = get_object_or_404(Data, id=pk, user=request.user)
     form = ChatForm()
     
     if request.method == "POST":
@@ -35,9 +35,9 @@ def chat(request, pk):
             query = form.cleaned_data["message"]
             model = form.cleaned_data["model"]
             
-            tasks.return_query_resp.delay(user.id, db.id)
+            tasks.return_query_resp.delay(user.id, data.id, model)
             
-            msg = Message.objects.create(db=db, text=query) # save user query to the database
+            msg = Message.objects.create(source=data, text=query) # save user query to the database
             
             return render(request, "dashboard/partials/_msg.html", {"msg": msg})
         else:
@@ -46,8 +46,8 @@ def chat(request, pk):
             
     context = {
         "form": form,
-        "messages": Message.objects.filter(db=db),
-        "db": db
+        "messages": Message.objects.filter(source=data),
+        "data": data
     }
     return render(request, "dashboard/partial/_chat.html", context)
 
@@ -59,8 +59,9 @@ class AddDataView(View):
         if data_type == "db":
             context["form"] = DatabaseForm()
             context["data_type"] = "Database"
-        else:
-            pass 
+        elif data_type == "api":
+            context["form"] = APIForm()
+            context["data_type"] = "API"
         return render(request, "dashboard/partials/_data_form.html", context)
     
     def post(self, request, data_type, *args, **kwargs):
@@ -68,12 +69,12 @@ class AddDataView(View):
         if data_type == "db":
             form = DatabaseForm(request.POST)
         elif data_type == "api":
-            pass
+            form = APIForm(request.POST)
         
         if form.is_valid():
-            db = form.save(request.user)
-            messages.success(request, "Database added successfully!")
-            return redirect("dashboard:data_chat", args=(db.id,))
+            data = form.save(request.user)
+            messages.success(request, "Data source added successfully!")
+            return redirect("dashboard:data_chat", args=(data.id,))
         else:
             for error in form.errors.values():
                 messages.info(request, error)

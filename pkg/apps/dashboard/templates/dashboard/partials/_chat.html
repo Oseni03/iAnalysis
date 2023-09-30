@@ -6,7 +6,7 @@
     <form hx-post="{% url 'dashboard:data_chat' %}" hx-swap="beforeend" hx-target="#message-contents">
         {% csrf_token %}
         <div class="card-header bg-transparent d-flex justify-content-between">
-            <h4>{{ db.title }}</h4>
+            <h4>{{ data.title }}</h4>
             <div>
                 {{ form.model }}
                 
@@ -34,7 +34,7 @@
 
 <script>
     const websocketProtocol = window.location.protocol === "http:" ? "wss": "ws";
-    const wsEndpoint = `${websocketProtocol}://${window.location.host}/ws/chat/{{db.id}}`;
+    const wsEndpoint = `${websocketProtocol}://${window.location.host}/ws/chat/{{data.id}}`;
     const socket = new WebSocket(wsEndpoint);
 
     // New event listener to capture incoming messages

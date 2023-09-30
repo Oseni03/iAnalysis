@@ -51,6 +51,25 @@ class DatabaseForm(forms.ModelForm, CredentialsForm):
         return data
 
 
+class APIForm(forms.ModelForm):
+    spec_url = forms.URLField(label="Spec url")
+    
+    class Meta:
+        model = Data 
+        fields = ("title", "spec_url", "header")
+        
+    def save(self, user, commit=True):
+        data = Data.objects.create(**self.cleaned_data)
+        data.user = user
+        data.is_api = True
+        
+        # Might have to save the header dict into aws secret manager 
+        
+        if commit:
+            data.save()
+        return data
+
+
 class ChatForm(forms.Form):
     model = forms.ChoiceField(
         widget=forms.RadioSelect(attrs={

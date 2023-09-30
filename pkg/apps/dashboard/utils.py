@@ -13,6 +13,11 @@ from langchain.chat_models import ChatAnthropic, ChatOpenAI
 from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.agents.agent_types import AgentType
+from langchain.requests import RequestsWrapper
+from langchain.llms.openai import OpenAI
+from langchain.agents.agent_toolkits.openapi import planner
+from langchain.tools import OpenAPISpec
+
 
 ## For elasticsearch integration
 #pip install elasticsearch
@@ -20,8 +25,8 @@ from elasticsearch import Elasticsearch
 from langchain.chains.elasticsearch_database import ElasticsearchDatabaseChain
 
 
-def generate_identifier(user: settings.AUTH_USER_MODEL, db: Data):
-    return f"{user.id}_{db.id}_{db.protocol}"
+def generate_identifier(user: settings.AUTH_USER_MODEL, data: Data):
+    return f"{user.id}_{data.id}_{data.protocol}"
 
 
 def get_schema(conn_str: str):
@@ -114,6 +119,18 @@ def get_elasticsearch_agent(conn_str, model_name="gpt-3.5-turbo-0613", tables=No
     chain = ElasticsearchDatabaseChain.from_llm(llm=llm, database=db, verbose=True)
     # response = chain.run(query)
     return chain
+
+
+def get_api_agent(self, header: dict, model):
+    openai_api_spec = OpenAPISpec.from_url(data.spec_url)
+    openai_requests_wrapper = RequestsWrapper(headers=header)
+    llm = OpenAI(model_name=model, temperature=0.25)
+    agent = planner.create_openapi_agent(
+        openai_api_spec, 
+        openai_requests_wrapper, 
+        llm
+    )
+    return agent
 
 
 def generate_bigquery_schema(df: pd.DataFrame) -> List[SchemaField]:
