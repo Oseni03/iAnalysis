@@ -5,7 +5,26 @@ from django.utils.translation import gettext_lazy as _
 import hashid_field
 
 # Create your models here.
-class Database(models.Model):
+class DataQuerySet(models.QuerySet):
+    def database(self):
+        return self.filter(is_db=True)
+    
+    def api(self):
+        return self.filter(is_api=True)
+
+
+class DataManager(models.Manager):
+    def get_queryset(self):
+        return DataQuerySet(self.model, using=self._db)
+    
+    def database(self):
+        return self.get_queryset().database()
+    
+    def api(self):
+        return self.get_queryset().api()
+
+
+class Data(models.Model):
     class ProtocolType(models.TextChoices):
         POSTGRESQL = "postgresql+psycopg2", _("PostgreSQL") # redshift/aurora postgresql
         MYSQL = "mysql+pymysql", _("MySQL") # or mysql+auroradataapi
@@ -31,6 +50,11 @@ class Database(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     
+    is_db = models.BooleanField(default=False)
+    is_api = models.BooleanField(default=False)
+    
+    objects = DataManager()
+    
     def __str__(self):
         return str(self.db_name)
     
@@ -54,7 +78,7 @@ class Database(models.Model):
 
 class Message(models.Model):
     id = hashid_field.HashidAutoField(primary_key=True)
-    db = models.ForeignKey(Database, related_name="messages", on_delete=models.CASCADE)
+    db = models.ForeignKey(Data, related_name="messages", on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     is_ai = models.BooleanField(default=False)
     sql_query = models.CharField(null=True, max_length=255)

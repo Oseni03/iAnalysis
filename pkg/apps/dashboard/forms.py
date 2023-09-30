@@ -2,7 +2,7 @@ from django import forms
 from django.core import exceptions
 from django.utils.translation import gettext as _
 
-from .models import Database 
+from .models import Data 
 # from .utils import get_schema, generate_identifier
 # from .services import secrets
 
@@ -13,12 +13,12 @@ class CredentialsForm(forms.Form):
 
 
 class DatabaseForm(forms.ModelForm, CredentialsForm):
-    protocol = forms.ChoiceField(label=_("Choose database type"), choices= Database.ProtocolType.choices)
+    protocol = forms.ChoiceField(label=_("Choose database type"), choices= Data.ProtocolType.choices)
     db_name = forms.CharField(label=_("Database name"))
     tables = forms.CharField(label=_("Tables (optional)"), help_text=_("Coma (,) seperated names"))
     
     class Meta:
-        model = Database 
+        model = Data 
         fields = ("title",
             "protocol", "host", "port", 
             "db_name", "tables", "snowflake_account", 
@@ -26,8 +26,9 @@ class DatabaseForm(forms.ModelForm, CredentialsForm):
         )
         
     def save(self, user, commit=True):
-        data = Database.objects.create(**self.cleaned_data)
+        data = Data.objects.create(**self.cleaned_data)
         data.user = user
+        data.is_db = True
         try:
             conn_str = data.conn_str(
                 self.cleaned_data["username"], 

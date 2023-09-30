@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 
-from .models import Database, Message
+from .models import Data, Message
 from .decorators import require_HTMX
 from .forms import ChatForm, DatabaseForm
 from . import tasks
@@ -14,7 +14,7 @@ from . import tasks
 
 # Create your views here.
 class DashboardView(LoginRequiredMixin, ListView):
-    model = Database
+    model = Data
     template_name = "dashboard/dashboard.html"
     context_object_name = "databases"
     
@@ -25,7 +25,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 @login_required
 @require_HTMX
 def chat(request, pk):
-    db = get_object_or_404(Database, id=pk, user=request.user)
+    db = get_object_or_404(Data, id=pk, user=request.user)
     form = ChatForm()
     
     if request.method == "POST":

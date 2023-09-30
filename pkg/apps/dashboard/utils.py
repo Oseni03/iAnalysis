@@ -1,5 +1,5 @@
 from django.conf import settings
-from .models import Database
+from .models import Data
 
 import pandas as pd
 from pandas.io.json._table_schema import build_table_schema
@@ -20,7 +20,7 @@ from elasticsearch import Elasticsearch
 from langchain.chains.elasticsearch_database import ElasticsearchDatabaseChain
 
 
-def generate_identifier(user: settings.AUTH_USER_MODEL, db: Database):
+def generate_identifier(user: settings.AUTH_USER_MODEL, db: Data):
     return f"{user.id}_{db.id}_{db.protocol}"
 
 
