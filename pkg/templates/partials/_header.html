@@ -31,7 +31,7 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="{% url 'users:login' %}">Login</a></li>
                     <li><a class="dropdown-item" href="{% url 'users:profile' %}">Profile</a></li>
-                    <li><a class="dropdown-item" aria-current="page" href="#">Dashboard</a></li>
+                    <li><a class="dropdown-item" aria-current="page" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li><a class="dropdown-item" href="{% url 'notifications:all' %}">Notifications</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'users:logout' %}">Sign Out</a></li>

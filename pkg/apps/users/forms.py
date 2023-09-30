@@ -40,7 +40,7 @@ class UserProfileForm(forms.ModelForm):
         fields = ("first_name", "last_name", "avatar")
 
     @staticmethod
-    def clean_avatar(avatar):
+    def validate_avatar(avatar):
         if avatar and avatar.size > UPLOADED_AVATAR_SIZE_LIMIT:
             raise ValidationError({"avatar": _("Too large file")}, 'too_large')
         return avatar

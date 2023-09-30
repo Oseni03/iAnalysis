@@ -41,7 +41,7 @@
 
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" hx-get="{% url 'dashboard:data_add' 'db' %}" hx-push-url="true" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-content">Database</a></li>
-                                        <li><a class="dropdown-item" href="#">API</a></li>
+                                        <li><a class="dropdown-item" hx-get="{% url 'dashboard:data_add' 'api' %}" hx-push-url="true" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-content">API</a></li>
                                     </ul>
                                 </div>
                             </li>
