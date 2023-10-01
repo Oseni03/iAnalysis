@@ -5,27 +5,26 @@
 <html lang="en" class="h-100">
 <head>
     {% include "partials/_meta.html" %}
-    
+
     {% block extra_css %}
     {% endblock %}
-    
+
     {% block extra_js %}
     {% endblock %}
 </head>
 <body class="d-flex flex-column h-100" style="padding-top: 56px;">
     {% include "partials/_header.html" %}
-    
+
     <div class="container">
         {% include "partials/_messages.html" %}
     </div>
-    
+
     {% block content %}
     {% endblock %}
-    
+
     <div class="container mt-auto">
         {% include "partials/_footer.html" %}
     </div>
-    
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% csrf_token %}

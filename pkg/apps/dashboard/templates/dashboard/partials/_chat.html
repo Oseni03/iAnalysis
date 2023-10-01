@@ -40,7 +40,7 @@
     // New event listener to capture incoming messages
     socket.addEventListener("message", (event) => {
         const messageData = JSON.parse(event.data);
-        console.log("Received notification:", messageData.message); // Log the received message to the console
+        console.log("Received message:", messageData.message); // Log the received message to the console
         displayMsg(messageData.message);
     });
 

@@ -13,7 +13,7 @@ urlpatterns = [
     path("finances/", include("apps.finances.urls.admin")),
 ]
 
-# if settings.DEVELOPMENT_MODE is True:
-#     urlpatterns.append(
-#         path("__debug__", include(debug_toolbar.urls))
-#     )
+if settings.DEVELOPMENT_MODE is True:
+    urlpatterns.append(
+        path("__debug__", include(debug_toolbar.urls))
+    )

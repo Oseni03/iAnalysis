@@ -16,8 +16,6 @@ from djstripe import models as djstripe_models
 
 
 class UserManager(BaseUserManager):
-    def get_queryset(self):
-        return super().get_queryset().prefetch_related("notifications").all()
     
     def create_user(self, email, password=None):
         if not email:

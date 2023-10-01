@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     # Internal Apps 
     "apps.users",
     "apps.finances",
-    "apps.notifications",
     "apps.websockets",
     "apps.dashboard",
     
@@ -265,8 +264,6 @@ LOGIN_REDIRECT_URL = "/users/profile/"
 LOGIN_URL = "/users/login/"
 
 RATELIMIT_IP_META_KEY = "common.utils.get_client_ip"
-
-NOTIFICATIONS_STRATEGIES = ["InAppNotificationStrategy"]
 
 
 #-----------------------------------
