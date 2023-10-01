@@ -16,7 +16,7 @@ User = get_user_model()
 session = SessionStore()
 
 @shared_task
-def return_query_resp(user_id, data_id, model):
+def return_query_resp(query, user_id, data_id, model):
     user = User.objects.get(id=user_id)
     data = models.Data.objects.get(id=data_id)
     identifier = utils.generate_identifier(user, data)
@@ -57,3 +57,4 @@ def return_query_resp(user_id, data_id, model):
     )
     msg.save() # save ai response and sql to the database 
     async_to_sync(channel_layer.group_send)(f"chat_{data_id}", {"type": "chat_message", "msg_id": msg.id})
+    return result

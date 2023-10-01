@@ -35,7 +35,7 @@ def chat(request, pk):
             query = form.cleaned_data["message"]
             model = form.cleaned_data["model"]
             
-            tasks.return_query_resp.delay(user.id, data.id, model)
+            tasks.return_query_resp.delay(query, user.id, data.id, model)
             
             msg = Message.objects.create(source=data, text=query) # save user query to the database
             
