@@ -2,6 +2,8 @@ from asgiref.sync import async_to_sync
 from celery import shared_task 
 from channels.layers import get_channel_layer
 
+# from langchain.callbacks import get_openai_callback
+
 # from .services import secrets
 # from . import utils
 from . import models
@@ -37,7 +39,15 @@ def return_query_resp(user_id, data_id, model):
     else:
         agent = session.get(identifier)
     
-    response = agent.run(query)
+    with get_openai_callback() as cb:
+        response = agent.run(query)
+        models.Usage.objects.create(
+            prompt_tokens=cb.prompt_tokens,
+            total_tokens=cb.total_tokens,
+            completion_tokens=cb.completion_tokens,
+            total_cost=cb.total_cost,
+        )
+        
     result = response["result"]
     msg = models.Message.objects.create(
         source=data, 

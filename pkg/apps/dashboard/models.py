@@ -88,3 +88,13 @@ class Message(models.Model):
     text = models.CharField(max_length=255)
     is_ai = models.BooleanField(default=False)
     sql_query = models.CharField(null=True, max_length=255)
+
+
+class Usage(models.Model):
+    prompt_tokens = models.IntegerField()
+    completion_tokens = models.IntegerField()
+    total_tokens = models.IntegerField()
+    total_cost = models.DecimalField(max_digits=12, decimal_places=5)
+    data = models.ForeignKey(Data, on_delete=models.PROTECT, related_name="usages")
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
