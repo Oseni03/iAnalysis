@@ -5,14 +5,14 @@ from django.utils import timezone
 from django.conf import settings
 from djstripe import webhooks, models as djstripe_models
 
-from . import models
+from . import models, utils
 from .services import subscriptions, customers, charges
 from config.celery import send_mail
 
 logger = logging.getLogger(__name__)
 
 
-@webhooks.handler('subscription_schedule.canceled')
+@webhooks.handler('subscription_schedule.canceled', 'customer.subscription.deleted')
 def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     """
     It is not possible to reactivate a canceled subscription with a different plan so we
@@ -24,6 +24,14 @@ def activate_free_plan_on_subscription_deletion(event: djstripe_models.Event):
     if settings.SUBSCRIPTION_ENABLE and settings.SUBSCRIPTION_HAS_FREE_PLAN:
         free_price = models.Price.objects.get(id=settings.SUBSCRIPTION_FREE_PRICE_ID)
         subscriptions.create_schedule(customer=event.customer, price=free_price)
+    
+    obj = event.data['object']
+    subscription_id = obj.get('subscription', None)
+    subscription: djstripe_models.Subscription = djstripe_models.Subscription.objects.get(id=subscription_id)
+    
+    customer = djstripe_models.Customer.get(id=event.customer)
+    
+    utils.remove_subscriber_from_group(customer.subscriber, subscription)
 
 
 @webhooks.handler('subscription_schedule.released')
@@ -85,14 +93,16 @@ def send_email_on_subscription_payment_failure(event: djstripe_models.Event):
     :param event:
     :return:
     """
-    send_mail.delay(enums.SUBSCRIPTION_ERROR, event.customer.subscriber)
+    customer = djstripe_models.Customer.get(id=event.customer)
+    send_mail.delay(enums.SUBSCRIPTION_ERROR, customer.subscriber)
 
 
 @webhooks.handler('customer.subscription.trial_will_end')
 def send_email_trial_expires_soon(event: djstripe_models.Event):
     obj = event.data['object']
     expiry_date = timezone.datetime.fromtimestamp(obj['trial_end'], tz=datetime.timezone.utc)
-    send_mail.delay(enums.TRIAL_EXPIRES_SOON, event.customer.subscriber, expiry_date= expiry_date)
+    customer = djstripe_models.Customer.get(id=event.customer)
+    send_mail.delay(enums.TRIAL_EXPIRES_SOON, customer.subscriber, expiry_date= expiry_date)
 
 
 @webhooks.handler('customer.subscription')
@@ -133,3 +143,26 @@ def charge_succeed_update(event: djstripe_models.Event):
     """
     data = event.data['object']
     charges.set_paid_until(data)
+
+
+@webhooks.handler(
+    'customer.subscription.created', 
+    "customer.subscription.updated",
+    "subscription_schedule.created",
+    "subscription_schedule.updated",
+)
+def upon_subscription_add_to_corresponding_group(event: djstripe_models.Event):
+    """
+    On successful subscription, add the user to the 
+    corresponding group with authorized permissions 
+
+    :param event:
+    :return:
+    """
+    obj = event.data['object']
+    subscription_id = obj.get('subscription', None)
+    subscription: djstripe_models.Subscription = djstripe_models.Subscription.objects.get(id=subscription_id)
+    
+    customer = event.customer
+    
+    utils.add_subscriber_to_group(customer.subscriber, subscription)

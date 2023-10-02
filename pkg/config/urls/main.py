@@ -11,6 +11,11 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 ]
 
+handler400 = "config.views.handler_400"
+handler403 = "config.views.handler_403"
+handler404 = "config.views.handler_404"
+handler500 = "config.views.handler_500"
+
 if settings.DEVELOPMENT_MODE is True:
     urlpatterns.append(
         path("__debug__", include(debug_toolbar.urls))
