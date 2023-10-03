@@ -31,7 +31,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
 @app.task
-def send_mail(type: enums.EmailType, user: settings.AUTH_USER_MODEL, **kwargs):
+def send_mail(type: enums.EmailType, user: settings.AUTH_USER_MODEL, **kwargs: dict):
     data={
         "domain": settings.DOMAIN,
         "site_name": settings.SITE_NAME,

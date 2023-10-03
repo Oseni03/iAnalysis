@@ -49,7 +49,7 @@ def chat(request, pk):
         "messages": Message.objects.filter(source=data),
         "data": data
     }
-    return render(request, "dashboard/partial/_chat.html", context)
+    return render(request, "dashboard/partials/_chat.html", context)
 
 
 @method_decorator(require_HTMX, name="dispatch")
@@ -62,6 +62,7 @@ class AddDataView(View):
         elif data_type == "api":
             context["form"] = APIForm()
             context["data_type"] = "API"
+        context["dtype"] = data_type
         return render(request, "dashboard/partials/_data_form.html", context)
     
     def post(self, request, data_type, *args, **kwargs):

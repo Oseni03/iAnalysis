@@ -3,7 +3,7 @@
 {% load django_htmx %}
 
 <div class="card border-0 d-flex flex-column h-100 w-100">
-    <form hx-post="{% url 'dashboard:data_chat' %}" hx-swap="beforeend" hx-target="#message-contents">
+    <form hx-post="{% url 'dashboard:data_chat' data.id %}" hx-swap="beforeend" hx-target="#message-contents">
         {% csrf_token %}
         <div class="card-header bg-transparent d-flex justify-content-between">
             <h4>{{ data.title }}</h4>

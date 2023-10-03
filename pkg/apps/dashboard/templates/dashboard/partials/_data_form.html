@@ -5,7 +5,7 @@
     
     <div class="h2 text-center my-3">Add {{ data_type }}</div>
     
-    <form action="." method="POST" class="form-group">
+    <form hx-post="{% url 'dashboard:data_add' dtype %}" hx-swap="none" class="form-group">
         {% csrf_token %}
         
         {% for field in form %}
